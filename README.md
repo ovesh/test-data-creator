@@ -3,7 +3,14 @@ test-data-creator
 
 Create test data for your application, based on creation sqls or xml configuration
 
-Dependencies:
+This application can be run as an SWT java app (it's horrible, but I wanted to experiment), or a commandline tool.
+
+### TODO
+
+- Add sample configuration files
+- Add sample usage for CLI
+
+### Dependencies
 
 - sqlite3 (should be in your path)
 - swt.jar for your platform
