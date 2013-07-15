@@ -18,7 +18,7 @@ public class PdfFile extends CustomContentDef {
 
 	public String generateContent() {
 //		File dir = new File("files");
-		File dir = new File("C:\\tmp\\test_data\\RFCS\\files");
+		File dir = new File("C:\\tmp\\test_data\\");
 		if(!dir.exists())
 			dir.mkdir();
 		else{

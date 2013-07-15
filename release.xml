@@ -1,0 +1,10 @@
+<project name="TestDataCreator" default="release">
+	<target name="release">
+		<copy todir="build/osx" verbose="true">
+			<fileset dir="" includes="*.jar,icon.gif,log4j.properties"/>
+		</copy>
+		<jar destfile="build/osx/TestDataCreator.jar" basedir="bin" 
+			compress="true" manifest="TestDataCreator-manifest.txt" />
+		<echo>Complete</echo>
+	</target>
+</project>
