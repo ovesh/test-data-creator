@@ -109,7 +109,7 @@ public class TestDataCreator {
 		initCustomContentClasses();
 		random.setSeed(System.currentTimeMillis());
 		
-		logger.debug("here!");
+		logger.debug("Starting application");
 		if(args.length > 0){
 			Options opt = new Options(args, 0);
 			OptionSet os = opt.getSet();
@@ -125,9 +125,7 @@ public class TestDataCreator {
 				// TODO configure logger with "log" option
 				fileOpen(os.getOption("in").getResultValue(0));
 				try {
-					logger.debug("here!");
 					generateData(os.getOption("out").getResultValue(0));
-					logger.debug("here!");
 				} catch (IOException e) {
 					logger.error("caught exception", e);
 					System.err.println("fatal exception caught: " + e);
