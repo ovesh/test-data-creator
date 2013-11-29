@@ -721,12 +721,16 @@ public class TestDataCreator {
 		String filePath = fileDlg.getFilterPath() + File.separator + fileName;
 		generateData(filePath);
 	}
-	
+
 	private void generateData(String filePath) throws IOException{
 		boolean isSql = ".sql".equalsIgnoreCase(filePath.substring(filePath.lastIndexOf('.')));
 		EXPORT_FORMAT = isSql? ExportFormat.SQL: ExportFormat.CTL;
 		File file = new File(filePath);
-		if((file.exists() && !file.canWrite()) || (!file.exists() && !file.getParentFile().canWrite())){
+		File parentDir = file.getParentFile();
+		if (parentDir == null){
+			parentDir = new File(System.getProperty("user.dir"));
+		}
+		if((file.exists() && !file.canWrite()) || (!file.exists() && !parentDir.canWrite())){
 			TestDataCreator.showErrMsg(shell, "Cannot write to file: " + file.getAbsolutePath());
 			return;
 		}
