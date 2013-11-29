@@ -67,7 +67,7 @@ import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 
 public class TestDataCreator {
-	
+
 	private Shell shell;
 	private Table table;
 	private Button editBtn;
@@ -91,10 +91,10 @@ public class TestDataCreator {
 	private int rowsSoFar = 0;
 	private static ExportFormat EXPORT_FORMAT = ExportFormat.SQL;
 	private static boolean COMMAND_LINE_MODE = false;
-	
+
 	public static class ExportFormat{
 		private ExportFormat(){}
-		
+
 		public static ExportFormat SQL = new ExportFormat();
 		public static ExportFormat CTL = new ExportFormat();
 	}
@@ -103,12 +103,12 @@ public class TestDataCreator {
 		TestDataCreator myself = new TestDataCreator();
 		myself.go(args);
 	}
-	
+
 	private void go(String args[]){
 		initLogger();
 		initCustomContentClasses();
 		random.setSeed(System.currentTimeMillis());
-		
+
 		logger.debug("Starting application");
 		if(args.length > 0){
 			Options opt = new Options(args, 0);
@@ -133,7 +133,7 @@ public class TestDataCreator {
 				return;
 			}
 		}
-		
+
 		display = new Display();
 		shell = new Shell(display);
 		Image img = new Image(display, "icon.gif");
@@ -149,7 +149,7 @@ public class TestDataCreator {
 				}
 			}
 		});
-		
+
 		initOpenBtn();
 		initSaveBtn();
 		initSaveAsBtn();
@@ -158,7 +158,7 @@ public class TestDataCreator {
 		initImportBtn();
 		initGenerateBtn();
 		initTableList();
-		
+
 		shell.pack();
 		shell.open();
 		while (!shell.isDisposed()) {
@@ -167,7 +167,7 @@ public class TestDataCreator {
 		}
 		display.dispose();
 	}
-	
+
 	private void initLogger() {
 		PropertyConfigurator.configure("log4j.properties");
 		logger = Logger.getLogger(TestDataCreator.class);
@@ -206,19 +206,19 @@ public class TestDataCreator {
 				// see if class has a default no-parameter constructor
 				c.getConstructor();
 			} catch (Exception e1) {
-				// it doesn't have one, so it must implement the private methods readObject() and 
+				// it doesn't have one, so it must implement the private methods readObject() and
 				// writeObject() so it can be serialized (so that projects can be saved)
 				try {
 					c.getDeclaredMethod("readObject", ObjectInputStream.class);
 				} catch (Exception e) {
-					logger.error("Class " + c.getName() + 
+					logger.error("Class " + c.getName() +
 							" does not have an default constructor, nor does it implement a private function readObject(ObjectInputStream)");
 					continue;
 				}
 				try {
 					c.getDeclaredMethod("writeObject", ObjectOutputStream.class);
 				} catch (Exception e) {
-					logger.error("Class " + c.getName() + 
+					logger.error("Class " + c.getName() +
 							" does not have an default constructor, nor does it implement a private function writeObject(ObjectOutputStream)");
 					continue;
 				}
@@ -229,7 +229,7 @@ public class TestDataCreator {
 				logger.error("Class " + c.getName() + " does not override toString()");
 				continue;
 			}
-			
+
 			customContentClasses.add(c);
 		}
 	}
@@ -243,7 +243,7 @@ public class TestDataCreator {
 			}
 		});
 	}
-	
+
 	private void fileOpen(){
 		if(needSave){
 			if(!promptSave())
@@ -264,7 +264,7 @@ public class TestDataCreator {
 		shell.setText(appTitle + " - " + filePath);
 		populateTableList();
 	}
-	
+
 	private void fileOpen(String filePath){
 		FileInputStream fis = null;
 		try {
@@ -287,16 +287,16 @@ public class TestDataCreator {
 				TableDef referencedTable = tableDefs.get(cdEl.getAttributeValue("table"));
 				String className = cdEl.getAttributeValue("class");
 				if("name.ovesh.content.DupReferenceContentDef".equals(className)) {
-					referencingField.setContentDef(new DupReferenceContentDef(referencingTable,referencingField, referencedTable, 
+					referencingField.setContentDef(new DupReferenceContentDef(referencingTable,referencingField, referencedTable,
 							referencedTable.getFieldDef(cdEl.getAttributeValue("field"))));
 				} else if("name.ovesh.content.DependentDupReferenceContentDef".equals(className)){
 					FieldDef dependField = referencingTable.getFieldDef(cdEl.getAttributeValue("dependField"));
 					FieldDef dependReferenceField = referencedTable.getFieldDef(cdEl.getAttributeValue("dependReferenceField"));
-					referencingField.setContentDef(new DependentDupReferenceContentDef(dependField, dependReferenceField, referencingTable, referencingField, referencedTable, 
+					referencingField.setContentDef(new DependentDupReferenceContentDef(dependField, dependReferenceField, referencingTable, referencingField, referencedTable,
 							referencedTable.getFieldDef(cdEl.getAttributeValue("field"))));
 				} else {
 					// TODO check if field is referencing itself
-					referencingField.setContentDef(new ReferenceContentDef(referencedTable, 
+					referencingField.setContentDef(new ReferenceContentDef(referencedTable,
 							referencedTable.getFieldDef(cdEl.getAttributeValue("field"))));
 				}
 			}
@@ -309,7 +309,7 @@ public class TestDataCreator {
 			logger.error("Error reading from file", e);
 		}
 	}
-	
+
 	private TableDef tableDefFromXml(Element tdEl) throws Exception{
 		TableDef res = new TableDef();
 		res.setName(tdEl.getAttributeValue("name"));
@@ -326,16 +326,16 @@ public class TestDataCreator {
 				break;
 			FieldDef primaryKeyField = res.getFieldDef(primaryKeyFieldName);
 			if(primaryKeyField == null){
-				throw new Exception("Specified primary key (" + primaryKeyFieldName + 
+				throw new Exception("Specified primary key (" + primaryKeyFieldName +
 					") not defined for table " + res.getName());
 			}
 			primaryKeys.add(primaryKeyField);
 		}
 		res.setPrimaryKeys(primaryKeys);
-		
+
 		return res;
 	}
-	
+
 	private FieldDef fieldDefFromXml(Element fdEl) throws Exception{
 		FieldDef res = new FieldDef();
 		res.setName(fdEl.getAttributeValue("name"));
@@ -354,7 +354,7 @@ public class TestDataCreator {
 		}
 		return res;
 	}
-	
+
 	private ContentDef contentDefFromXml(Element cdEl) throws Exception{
 		String className = cdEl.getAttributeValue("class");
 		try {
@@ -378,7 +378,7 @@ public class TestDataCreator {
 			throw e;
 		}
 	}
-	
+
 	private void setNeedSave(boolean needSaveArg){
 		needSave = needSaveArg;
 		String shellText = shell.getText();
@@ -398,7 +398,7 @@ public class TestDataCreator {
 		msg.setMessage("There are unsaved changes that will be discarded. Continue?");
 		return (msg.open() == SWT.OK);
 	}
-	
+
 	private void initSaveAsBtn() {
 		Button btn = new Button (shell, SWT.PUSH);
 		btn.setText ("Save As");
@@ -407,7 +407,7 @@ public class TestDataCreator {
 				saveAs();
 			}});
 	}
-	
+
 	private void initSaveBtn() {
 		Button btn = new Button (shell, SWT.PUSH);
 		btn.setText ("Save");
@@ -420,7 +420,7 @@ public class TestDataCreator {
 			}
 		});
 	}
-	
+
 	private void saveAs(){
 		FileDialog fd = new FileDialog(shell, SWT.SAVE);
 		fd.setFilterExtensions(new String[]{"*.tdc"});
@@ -429,7 +429,7 @@ public class TestDataCreator {
 		if(filePath == null || filePath.length() == 0)
 			return;
 		filePath = fd.getFilterPath() + File.separator + filePath;
-		
+
 		File file = new File(filePath);
 		if(file.exists()){
 			MessageBox msg = new MessageBox(shell, SWT.ICON_QUESTION | SWT.OK | SWT.CANCEL);
@@ -437,11 +437,11 @@ public class TestDataCreator {
 			if(msg.open() == SWT.CANCEL)
 				return;
 		}
-		
+
 		save(filePath);
 		projFilePath = filePath;
 	}
-	
+
 	private void save(String filePath){
 		try {
 			Document doc = new Document(new Element("tdcProj"));
@@ -471,7 +471,7 @@ public class TestDataCreator {
 				createTableDefDlg();
 			}});
 	}
-	
+
 	private void initEditBtn(){
 		editBtn = new Button (shell, SWT.PUSH);
 		editBtn.setText ("Edit");
@@ -484,7 +484,7 @@ public class TestDataCreator {
 			}});
 		editBtn.setEnabled(false);
 	}
-	
+
 	private void initImportBtn(){
 		Button btn = new Button (shell, SWT.PUSH);
 		btn.setText ("Import");
@@ -507,7 +507,7 @@ public class TestDataCreator {
 				populateTableList();
 			}});
 	}
-	
+
 	private void initGenerateBtn(){
 		Button btn = new Button (shell, SWT.PUSH);
 		btn.setText ("Generate!");
@@ -546,8 +546,8 @@ public class TestDataCreator {
 		});
 		table.setLayoutData("width 500, height 400");
 	}
-	
-	
+
+
 	private void populateTableList(){
 		table.removeAll();
 		// sort the list by name
@@ -566,12 +566,12 @@ public class TestDataCreator {
 		Shell createTableDlg = new Shell(shell, SWT.RESIZE | SWT.CLOSE | SWT.TITLE | SWT.MAX | SWT.APPLICATION_MODAL);
 		new UpdateTableDef(tableDef, createTableDlg, this);
 	}
-	
+
 	private void createTableDefDlg(){
 		Shell createTableDlg = new Shell(shell, SWT.RESIZE | SWT.CLOSE | SWT.TITLE | SWT.MAX | SWT.APPLICATION_MODAL);
 		new CreateTableDef(createTableDlg, this);
 	}
-	
+
 	public void putTable(String oldName, TableDef tableDef){
 		String newName = tableDef.getName();
 		if(!oldName.equals(newName)){
@@ -581,11 +581,11 @@ public class TestDataCreator {
 		setNeedSave(true);
 		populateTableList();
 	}
-	
+
 	public boolean containsTable(String tableName){
 		return tableDefs.containsKey(tableName);
 	}
-	
+
 	public static void showErrMsg(Shell parent, String msg){
 		if(COMMAND_LINE_MODE){
 			System.err.println(msg);
@@ -595,7 +595,7 @@ public class TestDataCreator {
 		errMsg.setMessage(msg);
 		errMsg.open();
 	}
-	
+
 	private String[] getScriptFiles(){
 		FileDialog fd = new FileDialog(shell, SWT.MULTI | SWT.OPEN);
 		fd.setFilterExtensions(new String[]{"*.sql"});
@@ -609,7 +609,7 @@ public class TestDataCreator {
 		}
 		return res;
 	}
-	
+
 	private void runScripts(String[] filePaths, String dbName){
 		Runtime runtime = Runtime.getRuntime();
 		String cmd = null;
@@ -637,7 +637,7 @@ public class TestDataCreator {
 			process.destroy();
 		}
 	}
-	
+
 	private void importTableDefs(String dbName) {
 		Process process = null;
 		Runtime runtime = Runtime.getRuntime();
@@ -647,7 +647,7 @@ public class TestDataCreator {
 			logger.debug("cmd: sqlite3.exe " + dbName);
 			Class.forName("org.sqlite.JDBC");
 			Connection con = DriverManager.getConnection("jdbc:sqlite:" + dbName);
-			
+
 			Statement stmt = con.createStatement();
 			ResultSet rs = stmt.executeQuery("select NAME from SQLITE_MASTER where TYPE='table' order by NAME");
 			while(rs.next()){
@@ -655,18 +655,18 @@ public class TestDataCreator {
 			}
 			rs.close();
 			stmt.close();
-			
+
 			for(int i = 0, size = tableNames.size(); i < size; i++){
 				String tableName = tableNames.get(i).toUpperCase();
 				if(tableDefs.containsKey(tableName)){
-					MessageBox confMsg = new MessageBox(shell, 
+					MessageBox confMsg = new MessageBox(shell,
 							SWT.ICON_QUESTION | SWT.OK | SWT.CANCEL);
-					confMsg.setMessage("A table with the name " + tableName + 
+					confMsg.setMessage("A table with the name " + tableName +
 							" is already defined. Overwrite?");
 					if(confMsg.open() == SWT.CANCEL)
 						continue;
 				}
-				
+
 				stmt = con.createStatement();
 				rs = stmt.executeQuery("pragma table_info(" + tableName + ")");
 				TableDef curTableDef = new TableDef();
@@ -694,7 +694,7 @@ public class TestDataCreator {
 				stmt.close();
 				tableDefs.put(tableName, curTableDef);
 			}
-			
+
 			con.close();
 			process.destroy();
 		} catch (Exception e) {
@@ -702,11 +702,11 @@ public class TestDataCreator {
 			showErrMsg(shell, "Could not get table definitions: \n" + e.getMessage());
 		}
 	}
-	
+
 	public TableDef[] getTableDefs(){
 		return tableDefs.values().toArray(new TableDef[tableDefs.size()]);
 	}
-	
+
 	private void generateData() throws IOException {
 		FileDialog fileDlg = new FileDialog(shell, SWT.SAVE);
 		fileDlg.setFilterExtensions(new String[]{"*.sql", "*.ctl"});
@@ -748,12 +748,12 @@ public class TestDataCreator {
 				generateDataCtl(tableQueue.remove(0), fw, df.format(i));
 			}
 		}
-		
+
 		disposeProgressBar();
 		fw.close();
 		showErrMsg(shell, "Date Generation complete!");
 	}
-	
+
 	private Vector<TableDef> createTableQueue(){
 		Vector<TableDef> res = new Vector<TableDef>();
 		while(res.size() < tableDefs.size()){
@@ -776,10 +776,10 @@ public class TestDataCreator {
 				res.add(td);
 			}
 		}
-		
+
 		return res;
 	}
-	
+
 	private Shell addProgressBar(){
 		if(!COMMAND_LINE_MODE){
 			// TODO add cancel button (same as "close")
@@ -797,31 +797,31 @@ public class TestDataCreator {
 			}
 			progressBar.setMaximum(totalRows);
 			rowsSoFar = 0;
-			
+
 			progressDlg.open();
 			return progressDlg;
 		}
-		
+
 		System.out.print("+");
 		return null;
 	}
-	
+
 	private void updateProgressBar(){
 		if(!COMMAND_LINE_MODE){
 			progressBar.setSelection(rowsSoFar);
 			return;
 		}
-		
+
 		System.out.print(((rowsSoFar % 50 == 0)? "\r\n": "") + "+");
 	}
 
-	
+
 	private void disposeProgressBar(){
 		if(!COMMAND_LINE_MODE){
 			progressDlg.dispose();
 			return;
 		}
-		
+
 		System.out.println("");
 	}
 
@@ -831,7 +831,7 @@ public class TestDataCreator {
 			format += "0";
 		return new DecimalFormat(format);
 	}
-	
+
 	private void writeControlDefinition(OutputStreamWriter fw, Vector<TableDef> finishedTables, DecimalFormat df) throws IOException{
 		fw.write("options(errors=99999999999999) \n");
 		fw.write("load data infile * \n");
@@ -851,7 +851,7 @@ public class TestDataCreator {
 					if(fields[i].getSize() > 100){
 						fw.write(" char(" + (fields[i].getSize() * 2) + ")");
 					}
-					fw.write(" \"replace(replace(:" + fields[i].getName() + 
+					fw.write(" \"replace(replace(:" + fields[i].getName() +
 							", '\\r\\n', chr(10)), '\\,', chr(44))\"");
 				}
 				else if(type == Types.DATE || type == Types.TIME || type == Types.TIMESTAMP){
@@ -870,7 +870,7 @@ public class TestDataCreator {
 		}
 		fw.write("begindata \n");
 	}
-	
+
 	private void generateDataSql(TableDef td, OutputStreamWriter fw) throws IOException{
 		String tableName = td.getName();
 		FieldDef[] fields = td.getFields();
@@ -905,7 +905,7 @@ public class TestDataCreator {
 					if(needsQuote){
 						if(isVeryLong) fw.write("\n");
 						if(needsQuote) fw.write("'");
-						
+
 						int maxLineSize = 700;
 						while(data.length() > maxLineSize){
 							String curData = data.substring(0, maxLineSize);
@@ -920,7 +920,7 @@ public class TestDataCreator {
 						.replaceAll("\\n", "'  || CHR(10) || '");
 					}
 					fw.write(data);
-					
+
 					if(fields[j].isReferenced()){
 						String key = td.getName() + "." + fields[j].getName();
 						ContentDef cd = fields[j].getContentDef();
@@ -939,14 +939,14 @@ public class TestDataCreator {
 			fw.write(");\n");
 			if(i % 1000 == 0)
 				fw.write("commit;\n");
-			
+
 			rowsSoFar++;
 			updateProgressBar();
 		}
 		fw.write("\n\n\n\n");
 		fw.write("commit;\n");
 	}
-	
+
 	private void generateDataCtl(TableDef td, OutputStreamWriter fw, String tblIdx) throws IOException{
 		System.out.println("\r\nStarting table " + td.getName());
 		FieldDef[] fields = td.getFields();
@@ -975,13 +975,13 @@ public class TestDataCreator {
 					int type = fields[j].getType();
 					boolean needsQuote = (type == Types.CHAR || type == Types.LONGVARCHAR || type == Types.VARCHAR || type == Types.CLOB);
 					if(needsQuote) fw.write("'");
-					
+
 					data = data.replaceAll("\\r\\n|\\r|\\n", "\\\\r\\\\n")
 					.replaceAll(",", "\\\\,");
 					ContentDef cd = fields[j].getContentDef();
 					if(!(cd instanceof OracleSequenceContentDef) && !(cd instanceof PostgresSequenceContentDef))
 						fw.write(data);
-					
+
 					if(fields[j].isReferenced()){
 						String key = td.getName() + "." + fields[j].getName();
 						if(cd instanceof OracleSequenceContentDef || cd instanceof PostgresSequenceContentDef){
@@ -996,13 +996,13 @@ public class TestDataCreator {
 				if(j < fields.length - 1) fw.write(",");
 			}
 			fw.write("\n");
-			
+
 			rowsSoFar++;
 			updateProgressBar();
 		}
 		System.out.println("\r\nFinished table " + td.getName());
 	}
-	
+
 	private void orderFields(FieldDef[] fields) {
 		int j = fields.length - 1;
 		for(int i = fields.length -1 ; i >= 0 ; i--) {
@@ -1014,7 +1014,7 @@ public class TestDataCreator {
 			}
 		}
 	}
-	
+
 	private HashMap<FieldDef, String> attemptDataGeneration(FieldDef[] fields, TableDef tabledef, int currentRow){
 		if("T_INFORMATION".equals(tabledef.getName())){
 			logger.debug("currentRow="+currentRow);
@@ -1029,7 +1029,7 @@ public class TestDataCreator {
 				row.put(fields[j], null);
 				if(fields[j].isNullOk() && random.nextInt(100) < fields[j].getNullRatio()){
 					row.put(fields[j], null);
-				} 
+				}
 				else{
 					ContentDef cd = fields[j].getContentDef();
 					Object data = null;
@@ -1041,18 +1041,18 @@ public class TestDataCreator {
 						int k = 0;
 						while(k < fields.length && !tmp.getName().equals(fields[k].getName())) k++;
 						String dependData = row.get(fields[k]);
-						data = getReferencedContent((DependentDupReferenceContentDef)cd, dependData); 
+						data = getReferencedContent((DependentDupReferenceContentDef)cd, dependData);
 					} else if(cd instanceof ReferenceContentDef) {
-						data = getReferencedContent((ReferenceContentDef)cd); 
+						data = getReferencedContent((ReferenceContentDef)cd);
 					} else {
-						data = cd.generateContent();						
+						data = cd.generateContent();
 					}
 					row.put(fields[j], data.toString());
 				}
 			}
 			if(primaryKeys.size() == 0) // table with no primary keys
 				return row;
-			
+
 			StringBuffer primaryKeyVal = new StringBuffer();
 			for(int j = 0, size = primaryKeys.size(); j < size; j++){
 				FieldDef fd = primaryKeys.get(j);
@@ -1080,25 +1080,25 @@ public class TestDataCreator {
 				continue;
 			// found unused primary key
 			enteredPrimaryKeyVals.add(primaryKeyVal.toString());
-			
+
 			return row;
 		}
 //		MessageBox errMsg = new MessageBox(shell, SWT.ICON_QUESTION | SWT.YES | SWT.NO);
-//		errMsg.setMessage("Could not generate new primary key for \ntable " + 
-//				tabledef.getName() + " row number " + currentRow + " after " + 
+//		errMsg.setMessage("Could not generate new primary key for \ntable " +
+//				tabledef.getName() + " row number " + currentRow + " after " +
 //				MAX_ATTEMPT_COUNT + " tries. \n" +
 //						"Try again?");
 //		if(errMsg.open() == SWT.YES)
 //			return attemptDataGeneration(fields, tabledef, currentRow);
 		return null;
 	}
-	
+
 	private Object getReferencedContent(ReferenceContentDef cd){
-		Vector<Object> enteredVals = 
+		Vector<Object> enteredVals =
 			allEnteredReferencedVals.get(cd.getTableDef().getName() + "." + cd.getFieldDef().getName());
 		assert(enteredVals != null);
 		if(enteredVals == null){
-			System.err.println("could not find key " + 
+			System.err.println("could not find key " +
 					cd.getTableDef().getName() + "." + cd.getFieldDef().getName() + " in allEnteredReferencedVals. " +
 							"Did you forget to set referenced=\"true\"?");
 			logger.error("enteredVals == null!");
@@ -1114,13 +1114,13 @@ public class TestDataCreator {
 
 		return enteredVals.get(idx % enteredVals.size());
 	}
-	
+
 	private Object getReferencedContent(DependentDupReferenceContentDef cd, String dependData){
-		Vector<Object> enteredVals = 
+		Vector<Object> enteredVals =
 			allEnteredReferencedVals.get(cd.getTableDef().getName() + "." + cd.getFieldDef().getName());
 		assert(enteredVals != null);
 		if(enteredVals == null){
-			System.err.println("could not find key " + 
+			System.err.println("could not find key " +
 					cd.getTableDef().getName() + "." + cd.getFieldDef().getName() + " in allEnteredReferencedVals. " +
 							"Did you forget to set referenced=\"true\"?");
 			logger.error("enteredVals == null!");
@@ -1136,15 +1136,15 @@ public class TestDataCreator {
 		Iterator<Object> it = tmp.iterator();
 		int i = 0;
 		while(it.hasNext()) {
-			Object curr = it.next(); 
+			Object curr = it.next();
 			if(curr.toString().equals(dependData))
 				resultPool.add(enteredVals.get(i));
 			i++;
 		}
-		
+
 		return resultPool.get(idx % resultPool.size());
 	}
-	
+
 	public static ExportFormat getExportFormat(){
 		return EXPORT_FORMAT;
 	}
