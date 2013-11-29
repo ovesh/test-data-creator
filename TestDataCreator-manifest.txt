@@ -1,3 +1,3 @@
 Manifest-Version: 1.0
-Class-Path: swt.jar miglayout15-swt.jar sqlitejdbc-v051.jar log4j-1.2.15.jar jdom.jar 
+Class-Path: swt.jar miglayout-4.0-swt.jar sqlitejdbc-v051.jar log4j-1.2.15.jar jdom-1.1.3.jar iText-2.1.3.jar
 Main-Class: name.ovesh.TestDataCreator
